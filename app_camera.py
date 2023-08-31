@@ -26,15 +26,15 @@ title_image = Image.open("SIESTA8LOGO.png")
 st.image(title_image, use_column_width=True)
 
 # sidebar
-st.sidebar.header("DL Model Config")
+st.sidebar.header("Model Config")
 model = YOLO('yolov8s.pt')
 model = YOLO('best.pt')
 
 # image/video options
-st.sidebar.header("Image/Video Config")
+st.sidebar.header("Input Config")
 source_selectbox = st.sidebar.selectbox(
     "Select Source",
-    ["Image", "Video", "Webcam"]
+    ["Webcam", "Image", "Video"]
 )
 
 confidence = float(st.sidebar.slider(
