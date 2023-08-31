@@ -4,8 +4,9 @@ import cv2
 from PIL import Image
 import tempfile
 import config
-from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
+from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, webrtc_streamer, WebRtcMode, RTCConfiguration
 import numpy as np
+import av
 
 def _display_detected_frames(conf, model, st_count, st_frame, image):
     """
@@ -22,17 +23,6 @@ def _display_detected_frames(conf, model, st_count, st_frame, image):
     # Predict the objects in the image using YOLOv8 model
     res = model.predict(image, conf=conf)
 
-    inText = 'Vehicle In'
-    outText = 'Vehicle Out'
-    if config.OBJECT_COUNTER1 != None:
-        for _, (key, value) in enumerate(config.OBJECT_COUNTER1.items()):
-            inText += ' - ' + str(key) + ": " +str(value)
-    if config.OBJECT_COUNTER != None:
-        for _, (key, value) in enumerate(config.OBJECT_COUNTER.items()):
-            outText += ' - ' + str(key) + ": " +str(value)
-
-    # Plot the detected objects on the video frame
-    st_count.write(inText + '\n\n' + outText)
     res_plotted = res[0].plot()
     st_frame.image(res_plotted,
                    caption='Detected Video',
@@ -175,49 +165,45 @@ def infer_uploaded_webcam(conf, model):
     except Exception as e:
         st.error(f"Error loading video: {str(e)}")
 
-# def play_webcam(conf, model):
-#     """
-#     Plays a webcam stream. Detects Objects in real-time using the YOLO object detection model.
+def play_webcam(conf, model):
+    """
+    Plays a webcam stream. Detects Objects in real-time using the YOLO object detection model.
 
-#     Returns:
-#         None
+    Returns:
+        None
 
-#     Raises:
-#         None
-#     """
-#     st.sidebar.title("Webcam Object Detection")
+    Raises:
+        None
+    """
+    st.sidebar.title("Webcam Object Detection")
 
-#     webrtc_streamer(
-#         key="example",
-#         video_transformer_factory=lambda: MyVideoTransformer(conf, model),
-#         rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-#         media_stream_constraints={"video": True, "audio": False},
-#     )
-
-# class MyVideoTransformer(VideoTransformerBase):
-#     def __init__(self, conf, model):
-#         self.conf = conf
-#         self.model = model
-
-#     def recv(self, frame):
-#         image = frame.to_ndarray(format="bgr24")
-#         processed_image = self._display_detected_frames(image)
-#         st.image(processed_image, caption='Detected Video', channels="BGR", use_column_width=True)
+    def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
+        image = frame.to_ndarray(format="bgr24")
 
 
-#     def _display_detected_frames(self, image):
-#         orig_h, orig_w = image.shape[0:2]
-#         width = 720  # Set the desired width for processing
+        orig_h, orig_w = image.shape[0:2]
+        width = 720  # Set the desired width for processing
 
-#         # cv2.resize used in a forked thread may cause memory leaks
-#         input = np.asarray(Image.fromarray(image).resize((width, int(width * orig_h / orig_w))))
+        # cv2.resize used in a forked thread may cause memory leaks
+        processed_image = np.asarray(Image.fromarray(image).resize((width, int(width * orig_h / orig_w))))
 
-#         if self.model is not None:
-#             # Perform object detection using YOLO model
-#             res = self.model.predict(input, conf=self.conf)
+        if model is not None:
+            # Perform object detection using YOLO model
+            res = model.predict(processed_image, conf=conf)
+            # print(f'resboxes: {res.boxes}')
 
-#             # Plot the detected objects on the video frame
-#             res_plotted = res[0].plot()
-#             return res_plotted
+            # Plot the detected objects on the video frame
+            res_plotted = res[0].plot()
+            # print(f'resplotted: {res_plotted}')
 
-#         return input
+
+        return av.VideoFrame.from_ndarray(res_plotted, format="bgr24")
+
+
+    webrtc_streamer(
+        key="example",
+        # video_transformer_factory=lambda: MyVideoTransformer(conf, model),
+        video_frame_callback = video_frame_callback,
+        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+        media_stream_constraints={"video": True, "audio": False},
+    )
