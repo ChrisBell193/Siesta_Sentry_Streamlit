@@ -175,7 +175,7 @@ def play_webcam(conf, model):
     Raises:
         None
     """
-    st.sidebar.title("Webcam Object Detection")
+    # st.sidebar.title("Webcam Object Detection")
 
     def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
         image = frame.to_ndarray(format="bgr24")
