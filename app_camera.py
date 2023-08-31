@@ -2,17 +2,28 @@ from pathlib import Path
 import streamlit as st
 from ultralytics import YOLO
 from utils import load_model, infer_uploaded_image, infer_uploaded_video, infer_uploaded_webcam
-
+from PIL import Image
 
 # setting page layout
+# st.set_page_config(
+#     page_title="Interactive Interface for YOLOv8",
+#     page_icon="🤖",
+#     layout="wide",
+#     initial_sidebar_state="expanded"
+#     )
+
 st.set_page_config(
-    page_title="Interactive Interface for YOLOv8",
-    page_icon="🤖",
-    layout="wide",
+    page_title="Siesta Sentry",
+    page_icon=":male-detective:",
+    # layout="wide",
     initial_sidebar_state="expanded"
-    )
-# main page heading
-st.title("Interactive Interface for YOLOv8")
+)
+
+# Load the image for the title
+title_image = Image.open("SIESTA8LOGO.png")
+
+# Display the title image
+st.image(title_image, use_column_width=True)
 
 # sidebar
 st.sidebar.header("DL Model Config")
