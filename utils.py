@@ -4,6 +4,8 @@ import cv2
 from PIL import Image
 import tempfile
 import config
+from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
+import numpy as np
 
 def _display_detected_frames(conf, model, st_count, st_frame, image):
     """
@@ -152,9 +154,10 @@ def infer_uploaded_webcam(conf, model):
         flag = st.button(
             label="Stop running"
         )
-        vid_cap = cv2.VideoCapture(0)  # local camera
+        vid_cap = cv2.VideoCapture(2)  # local camera
         st_count = st.empty()
         st_frame = st.empty()
+
         while not flag:
             success, image = vid_cap.read()
             if success:
@@ -170,3 +173,50 @@ def infer_uploaded_webcam(conf, model):
                 break
     except Exception as e:
         st.error(f"Error loading video: {str(e)}")
+
+# def play_webcam(conf, model):
+#     """
+#     Plays a webcam stream. Detects Objects in real-time using the YOLO object detection model.
+
+#     Returns:
+#         None
+
+#     Raises:
+#         None
+#     """
+#     st.sidebar.title("Webcam Object Detection")
+
+#     webrtc_streamer(
+#         key="example",
+#         video_transformer_factory=lambda: MyVideoTransformer(conf, model),
+#         rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+#         media_stream_constraints={"video": True, "audio": False},
+#     )
+
+# class MyVideoTransformer(VideoTransformerBase):
+#     def __init__(self, conf, model):
+#         self.conf = conf
+#         self.model = model
+
+#     def recv(self, frame):
+#         image = frame.to_ndarray(format="bgr24")
+#         processed_image = self._display_detected_frames(image)
+#         st.image(processed_image, caption='Detected Video', channels="BGR", use_column_width=True)
+
+
+#     def _display_detected_frames(self, image):
+#         orig_h, orig_w = image.shape[0:2]
+#         width = 720  # Set the desired width for processing
+
+#         # cv2.resize used in a forked thread may cause memory leaks
+#         input = np.asarray(Image.fromarray(image).resize((width, int(width * orig_h / orig_w))))
+
+#         if self.model is not None:
+#             # Perform object detection using YOLO model
+#             res = self.model.predict(input, conf=self.conf)
+
+#             # Plot the detected objects on the video frame
+#             res_plotted = res[0].plot()
+#             return res_plotted
+
+#         return input
