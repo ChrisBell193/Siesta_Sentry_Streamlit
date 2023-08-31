@@ -10,7 +10,22 @@ import pygame
 from ultralytics import YOLO
 # from ultralytics.yolo.v8.detect.predict import DetectionPredictor
 import sys
+import base64
 
+#function for playing sound
+def autoplay_audio(file_path: str):
+    with open(file_path, "rb") as f:
+        data = f.read()
+        b64 = base64.b64encode(data).decode()
+        md = f"""
+            <audio autoplay="true">
+            <source src="data:audio/wav;base64,{b64}" type="audio/wav">
+            </audio>
+            """
+        st.markdown(
+            md,
+            unsafe_allow_html=True,
+        )
 
 # Load the YOLOv5 model
 if 'model' not in st.session_state:
@@ -39,9 +54,12 @@ st.image(title_image, use_column_width=True)
 
 # Load the alert sound
 alert_sound_path = "alarm.wav"
+audio_file = open(alert_sound_path, 'rb')
+audio_bytes = audio_file.read()
+
 
 # Initialize pygame mixer
-pygame.mixer.init()
+# pygame.mixer.init()
 
 # Input field for YouTube video URL or video file path
 st.write("\n\n")
@@ -92,7 +110,9 @@ if st.button("Start Detection") and (video_url or video_path):
                         current_time = time.time()
                         if current_time - last_alert_time >= 20:
                             # Play the alert sound
-                            pygame.mixer.Sound(alert_sound_path).play()
+                            # pygame.mixer.Sound(alert_sound_path).play()
+                            # st.audio(audio_bytes, format='audio/wav')
+                            autoplay_audio(alert_sound_path)
                             last_alert_time = current_time
                             st.info("Drowsiness Detected!")
                 else:
