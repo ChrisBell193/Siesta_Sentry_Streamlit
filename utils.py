@@ -154,23 +154,24 @@ def infer_uploaded_webcam(conf, model):
         flag = st.button(
             label="Stop running"
         )
-        vid_cap = cv2.VideoCapture(2)  # local camera
+        vid_cap = cv2.VideoCapture(0)  # local camera
         st_count = st.empty()
         st_frame = st.empty()
 
         while not flag:
-            success, image = vid_cap.read()
-            if success:
-                _display_detected_frames(
-                    conf,
-                    model,
-                    st_count,
-                    st_frame,
-                    image
-                )
-            else:
-                vid_cap.release()
-                break
+            while vid_cap.isOpened():
+                success, image = vid_cap.read()
+                if success:
+                    _display_detected_frames(
+                        conf,
+                        model,
+                        st_count,
+                        st_frame,
+                        image
+                    )
+                else:
+                    vid_cap.release()
+                    break
     except Exception as e:
         st.error(f"Error loading video: {str(e)}")
 
