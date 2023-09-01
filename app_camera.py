@@ -16,6 +16,7 @@ st.set_page_config(
     page_title="Siesta Sentry",
     page_icon=":male-detective:",
     # layout="wide",
+
     initial_sidebar_state="expanded"
 )
 
