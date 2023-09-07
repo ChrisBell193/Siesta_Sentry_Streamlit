@@ -21,7 +21,7 @@ st.set_page_config(
 )
 
 # Load the image for the title
-title_image = Image.open("../logo/SIESTA8LOGO.png")
+title_image = Image.open("SIESTA8LOGO.png")
 
 # Display the title image
 st.image(title_image, use_column_width=True)
