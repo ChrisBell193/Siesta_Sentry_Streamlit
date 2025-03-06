@@ -255,6 +255,7 @@ def play_webcam_alarm(conf, model):
             res = model.predict(processed_image, conf=conf)
             for result in res:
                 names_dict = result.names
+                drowsy_counter = 0
                 if 'drowsy' in names_dict.values():
                     drowsy_counter += 1
                     if drowsy_counter >= threshold_frames:

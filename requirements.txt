@@ -5,8 +5,8 @@ ultralytics==8.0.158
 mediapipe
 pygame
 
-streamlit
-streamlit_webrtc
+streamlit==1.20.0
+streamlit-webrtc==0.45.0
 torch
 
 torchvision
