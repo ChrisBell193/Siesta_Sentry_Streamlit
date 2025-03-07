@@ -2,7 +2,6 @@ uuid
 opencv-python>=4.6.0
 Pillow>=7.1.2
 ultralytics==8.0.158
-mediapipe
 pygame
 streamlit==1.20.0
 streamlit-webrtc==0.45.0
