@@ -16,3 +16,10 @@ textColor = '#5CA8D6'
 # Accepted values (serif | sans serif | monospace)
 # Default: "sans serif"
 font = "sans serif"
+
+[server]
+headless = true
+port = 8501
+
+[python]
+version = "3.11.4"
