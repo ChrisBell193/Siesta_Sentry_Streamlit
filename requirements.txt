@@ -6,8 +6,8 @@ ultralytics==8.0.158
 pygame==2.5.2
 streamlit==1.20.0
 streamlit-webrtc==0.45.0
-torch==2.2.0+cpu
-torchvision==0.15.2+cpu
+torch==2.2.0+
+torchvision==0.15.2
 matplotlib>=3.2.2
 PyYAML==6.0.1
 requests>=2.23.0
