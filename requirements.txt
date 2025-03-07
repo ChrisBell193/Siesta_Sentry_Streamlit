@@ -17,3 +17,4 @@ pytube
 easydict
 pandas==1.5.3
 numpy==1.24.3
+setuptools>=67.0.0
