@@ -20,6 +20,3 @@ font = "sans serif"
 [server]
 headless = true
 port = 8501
-
-[python]
-pythonVersion = "3.11.4"
