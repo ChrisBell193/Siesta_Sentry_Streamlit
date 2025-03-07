@@ -30,9 +30,13 @@ st.image(title_image, use_column_width=True)
 
 # sidebar
 st.sidebar.header("Model Config")
-with torch.serialization.safe_globals([DetectionModel]):
-    model = YOLO('yolov8s.pt')
-    model = YOLO('best.pt')
+
+model = YOLO('yolov8s.pt')
+model = YOLO('best.pt')
+#model.model = torch.load('yolov8s.pt', weights_only=False)
+#model.model = torch.load('best.pt', weights_only=False)
+
+# model = torch.load('yolov8s.pt')
 
 # image/video options
 st.sidebar.header("Input Config")
