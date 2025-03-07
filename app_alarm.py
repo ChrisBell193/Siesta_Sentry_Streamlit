@@ -4,6 +4,8 @@ from ultralytics import YOLO
 from utils import load_model, infer_uploaded_image, infer_uploaded_video, infer_uploaded_webcam, play_webcam, play_webcam_alarm
 #from app.utils import infer_uploaded_image, infer_uploaded_video, play_webcam_alarm
 from PIL import Image
+import torch
+from ultralytics.nn.tasks import DetectionModel
 
 # setting page layout
 # st.set_page_config(
@@ -28,8 +30,9 @@ st.image(title_image, use_column_width=True)
 
 # sidebar
 st.sidebar.header("Model Config")
-model = YOLO('yolov8s.pt')
-model = YOLO('best.pt')
+with torch.serialization.safe_globals([DetectionModel]):
+    model = YOLO('yolov8s.pt')
+    model = YOLO('best.pt')
 
 # image/video options
 st.sidebar.header("Input Config")
